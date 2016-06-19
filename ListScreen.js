@@ -11,24 +11,93 @@ import {
     StyleSheet,
     Text,
     View,
+    ListView,
 } from 'react-native'
+import StoryItem from './StoryItem'
+const API_LATEST_URL="http://news.at.zhihu.com/api/4/news/latest";
+var latestDate = null;
+var dataBlob = {};
+function parseDateFromYYYYMMdd(str) {
+     if (!str) return new Date();
+      return new Date(str.slice(0, 4),str.slice(4, 6) - 1,str.slice(6, 8));
+   }
+Date.prototype.yyyymmdd = function() {
+     var yyyy = this.getFullYear().toString();
+     var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+     var dd  = this.getDate().toString();
+     return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+   };
+
 
 export default class ListScreen extends  React.Component{
-    render(){
-        return(
-          <View style={styles.container}>
-              <Text>
-                  This is the list Screen.
-              </Text>
+    constructor(){
+        super();
+        var ds=new ListView.DataSource({rowHasChanged:(row1,row2)=>row1 !==row2});
+        this.state={
+            dataSource:ds,
+        }
+    }
+    renderRow(story) {
+        return (
+          <View>
+                  <StoryItem
+                    story={story}
+                  />
           </View>
         );
     }
+
+    render(){
+        return(
+          <View style={styles.container}>
+              <View style={styles.separator}/>
+              <ListView
+                  dataSource={this.state.dataSource}
+                  renderRow={this.renderRow}
+              />
+          </View>
+        );
+    }
+    componentDidMount(){
+        this.fetchStories(latestDate);
+    }
+    fetchStories(dataBefore){
+        let reqUrl=API_LATEST_URL;
+        fetch(reqUrl)
+        .then((response)=>response.json())
+        .then((responseData)=>{
+             latestDate=parseDateFromYYYYMMdd(responseData.date);
+            var date=new Date(latestDate);
+            var sectionIDs=[];
+            sectionIDs.push(date.yyyymmdd());
+            dataBlob[latestDate.yyyymmdd()]=responseData.stories;
+            console.log(dataBlob);
+            this.setState({
+                dataSource:this.state.dataSource.cloneWithRows(responseData.stories),
+            })
+
+
+        })
+
+    }
 }
-const styles=StyleSheet.create({
-    container:{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'#F5FCFF',
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FAFAFA',
     },
+    rator: {
+        height: 1,
+        backgroundColor: '#eeeeee',
+    },
+    scrollSpinner: {
+        marginVertical: 20,
+    },
+    sectionHeader: {
+        fontSize: 14,
+        color: '#888888',
+        margin: 10,
+        marginLeft: 16,
+    }
 });
+

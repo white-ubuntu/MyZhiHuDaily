@@ -1,4 +1,4 @@
-# this is how troubles resolve.
+# this is how troubleshooting.
 
 ##2016-06-19
   #setTimeOut

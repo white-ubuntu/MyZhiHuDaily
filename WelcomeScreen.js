@@ -37,7 +37,7 @@ export default class WelcomeScreen extends  React.Component{
             return this.renderEmpty();
         }
         return (
-            <Image source={{uri:"https://pic1.zhimg.com/4dfa596eb7f3fe8a3c02f1d9a879271e.jpg"}}
+            <Image source={{uri:this.state.cover.img}}
                    style={styles.cover}>
                     <Text style={styles.text}>
                         {this.state.cover.text}
