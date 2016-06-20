@@ -17,6 +17,7 @@ import {
 
 import WelcomeScreen from './WelcomeScreen'
 import ListScreen from './ListScreen'
+import StoryScreen from './StoryScreen'
 const toobarActions=[
     {title:'提醒',icon:require('image!ic_message_white'),show:'always'},
     {title: '夜间模式', show: 'never'},
@@ -42,7 +43,7 @@ var  RouteMapper=(route,navigationOperations)=>{
                     titleColor="white"
                     actions={toobarActions}
                 />
-                <ListScreen/>
+                <ListScreen navigator={navigationOperations}/>
             </View>
         );
     }else if(route.name==='story'){
@@ -56,11 +57,11 @@ var  RouteMapper=(route,navigationOperations)=>{
                     titleColor="white"
                     actions={[]}
                 />
-                <View>
-                    <Text>
-                        Story
-                    </Text>
-                </View>
+                <StoryScreen
+                    style={{flex:1}}
+                    navigator={navigationOperations}
+                    story={route.story}
+                />
             </View>
         );
     }
@@ -92,7 +93,7 @@ class MyZhiHuDaily extends Component {
             <WelcomeScreen/>
           );
       };
-      let initialRouteStack=[{name:'home'},{name:'story'}];
+      let initialRouteStack=[{name:'home'}];
       return(
           <Navigator
             style={styles.container}

@@ -39,10 +39,20 @@ export default class ListScreen extends  React.Component{
             refreshing:false
         }
     }
+    selectStory(story:Object){
+        this.props.navigator.push({
+            title:story.title,
+            name:'story',
+            story:story,
+        })
+    }
     renderRow(story) {
+        console.log(story);
         return (
           <View>
                   <StoryItem
+                      key={story.id}
+                    onSelect={()=>this.selectStory(story)}
                     story={story}
                   />
           </View>
@@ -55,7 +65,7 @@ export default class ListScreen extends  React.Component{
               <View style={styles.separator}/>
               <ListView
                   dataSource={this.state.dataSource}
-                  renderRow={this.renderRow}
+                  renderRow={this.renderRow.bind(this)}
                   renderSeparator={this._renderSeperator}
                   refreshControl={
                     <RefreshControl
@@ -74,7 +84,7 @@ export default class ListScreen extends  React.Component{
     _renderSeperator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
         return (
             <View
-                key={`${sectionID}-${rowID}`}
+                key={sectionID-rowID}
                 style={{
           height: adjacentRowHighlighted ? 4 : 1,
           backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',

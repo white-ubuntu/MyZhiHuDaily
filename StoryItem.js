@@ -14,10 +14,15 @@ import {
 } from 'react-native'
 
 export default class StoryItem extends React.Component{
+    constructor(props){
+        super(props);
+    }
     render(){
         return(
             <View>
-                <TouchableNativeFeedback>
+                <TouchableNativeFeedback
+                    onPress={this.props.onSelect}
+                >
                 <View style={styles.row}>
                     <Text style={styles.storyTitle} numberOfLines={5}>
                         {this.props.story.title}
