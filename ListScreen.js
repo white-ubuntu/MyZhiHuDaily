@@ -12,6 +12,7 @@ import {
     Text,
     View,
     ListView,
+    RefreshControl
 } from 'react-native'
 import StoryItem from './StoryItem'
 const API_LATEST_URL="http://news.at.zhihu.com/api/4/news/latest";
@@ -30,11 +31,12 @@ Date.prototype.yyyymmdd = function() {
 
 
 export default class ListScreen extends  React.Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         var ds=new ListView.DataSource({rowHasChanged:(row1,row2)=>row1 !==row2});
         this.state={
             dataSource:ds,
+            refreshing:false
         }
     }
     renderRow(story) {
@@ -54,8 +56,30 @@ export default class ListScreen extends  React.Component{
               <ListView
                   dataSource={this.state.dataSource}
                   renderRow={this.renderRow}
+                  renderSeparator={this._renderSeperator}
+                  refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh.bind(this)}
+                    />
+                  }
               />
           </View>
+        );
+    }
+    _onRefresh(){
+        this.setState({refreshing:true});
+        this.fetchStories(latestDate);
+    }
+    _renderSeperator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+        return (
+            <View
+                key={`${sectionID}-${rowID}`}
+                style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+            />
         );
     }
     componentDidMount(){
@@ -74,6 +98,7 @@ export default class ListScreen extends  React.Component{
             console.log(dataBlob);
             this.setState({
                 dataSource:this.state.dataSource.cloneWithRows(responseData.stories),
+                refreshing:false
             })
 
 

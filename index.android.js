@@ -11,6 +11,8 @@ import {
   Text,
   View,
   ToolbarAndroid,
+    BackAndroid,
+   Navigator,
 } from 'react-native';
 
 import WelcomeScreen from './WelcomeScreen'
@@ -20,6 +22,51 @@ const toobarActions=[
     {title: '夜间模式', show: 'never'},
     {title: '设置选项', show: 'never'}
 ];
+var _navigator;
+BackAndroid.addEventListener('hardwareBackPress',function(){
+    if(_navigator && _navigator.getCurrentRoutes().length>1){
+        _navigator.pop();
+        return true;
+    }
+    return false;
+})
+var  RouteMapper=(route,navigationOperations)=>{
+    _navigator=navigationOperations;
+    if(route.name==='home'){
+        return(
+            <View style={styles.container}>
+                <ToolbarAndroid
+                    style={styles.toolbar}
+                    navIcon={require('image!ic_menu_white')}
+                    title="知乎日报"
+                    titleColor="white"
+                    actions={toobarActions}
+                />
+                <ListScreen/>
+            </View>
+        );
+    }else if(route.name==='story'){
+        return(
+            <View style={styles.container}>
+                <ToolbarAndroid
+                    style={styles.toolbar}
+                    navIcon={require('image!ic_back_white')}
+                    title='故事题目'
+                    onIconClicked={navigationOperations.pop}
+                    titleColor="white"
+                    actions={[]}
+                />
+                <View>
+                    <Text>
+                        Story
+                    </Text>
+                </View>
+            </View>
+        );
+    }
+
+}
+
 class MyZhiHuDaily extends Component {
     constructor(){
         super();
@@ -38,23 +85,25 @@ class MyZhiHuDaily extends Component {
     componentWillUnmount(){
         clearTimeout(this.timer);
     }
+
   render() {
       if(!this.state.splashed){
           return(
             <WelcomeScreen/>
           );
-      }
+      };
+      let initialRouteStack=[{name:'home'},{name:'story'}];
       return(
-          <View style={styles.container}>
-              <ToolbarAndroid
-                  style={styles.toolbar}
-                  navIcon={require('image!ic_menu_white')}
-                  title="知乎日报"
-                  titleColor="white"
-                  actions={toobarActions}
-              />
-              <ListScreen/>
-              </View>
+          <Navigator
+            style={styles.container}
+            initialRouteStack={initialRouteStack}
+            configureScene={()=>Navigator.SceneConfigs.HorizontalSwipeJump}
+            renderScene={RouteMapper}
+
+          />
+
+
+
 
       )
   }
