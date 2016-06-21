@@ -61,7 +61,7 @@ export default class ListScreen extends  React.Component{
 
     render(){
         return(
-          <View style={styles.container}>
+          <View  style={styles.container}>
               <View style={styles.separator}/>
               <ListView
                   dataSource={this.state.dataSource}

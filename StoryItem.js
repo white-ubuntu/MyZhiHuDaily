@@ -24,7 +24,7 @@ export default class StoryItem extends React.Component{
                     onPress={this.props.onSelect}
                 >
                 <View style={styles.row}>
-                    <Text style={styles.storyTitle} numberOfLines={5}>
+                    <Text style={styles.storyTitle} numberOfLines={3}>
                         {this.props.story.title}
                     </Text>
                     <Image

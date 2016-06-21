@@ -8,7 +8,10 @@ import {
     Text,
     Image,
     WebView,
+    ToolbarAndroid,
+    TouchableHighlight,
 } from 'react-native'
+import DetailToolbar from './DetailToolbar'
 const BASE_URL="http://news.at.zhihu.com/api/4/news/"
 export default class StoryScreen extends React.Component{
     constructor(props){
@@ -18,22 +21,28 @@ export default class StoryScreen extends React.Component{
             detail:null,
         }
     }
+
     render(){
+        var toolbar=<DetailToolbar navigator={this.props.navigator} style={styles.toolbar} story={this.props.story}/>
         if(this.state.isLoading){
             return(
                 <View style={[styles.container,styles.center]}>
                     <Text>
                         正在加载
                     </Text>
+                    {toolbar}
                 </View>
                 );
         }else{
             if(this.state.detail){
                 return(
                     <View style={styles.container}>
+                        {toolbar}
                         <WebView html={this.state.detail.body}
+                                 style={styles.content}
                                  automaticallyAdjustContentInsets={true}
                                  scrollEnabled={false}/>
+
                     </View>
                     )
             }else {
@@ -42,6 +51,7 @@ export default class StoryScreen extends React.Component{
                       <Text>
                           加载失败
                       </Text>
+                      {toolbar}
                   </View>
                 );
             }
@@ -70,10 +80,24 @@ export default class StoryScreen extends React.Component{
 }
 
 const styles = StyleSheet.create({
+    toolbar: {
+        backgroundColor: '#00a2ed',
+        height: 56,
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 0,
+    },
     headerImage: {
         height: 200,
         flexDirection: 'row',
         backgroundColor: '#DDDDDD',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 56,
     },
     titleContainer: {
         flex: 1,
@@ -101,6 +125,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        top:0,
+        top:56,
     },
 });
